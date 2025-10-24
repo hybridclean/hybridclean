@@ -1,119 +1,83 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HybridClean Login</title>
-  <style>
-
-    body {
-
-      font-family: Segoe UI, Arial, sans-serif;
-
-      background: linear-gradient(180deg,#e0f0ff,#ffffff);
-
-      height: 100vh;
-
-      display: flex;
-
-      flex-direction: column;
-
-      align-items: center;
-
-      justify-content: center;
-
-      margin: 0;
-
-    }
-
-    img { width: 220px; margin-bottom: 20px; }
-
-    .login-box {
-
-      background: #fff;
-
-      border-radius: 20px;
-
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-
-      padding: 30px 40px;
-
-      text-align: center;
-
-      width: 300px;
-
-    }
-
-    h2 { color:#0077b6; margin-bottom:15px; }
-
-    input {
-
-      width: 100%; padding: 10px; margin-bottom: 15px;
-
-      border:1px solid #ccc; border-radius:8px;
-
-    }
-
-    button {
-
-      background:#0077b6; color:#fff; border:none;
-
-      padding:10px 20px; border-radius:8px; cursor:pointer;
-
-    }
-
-    button:hover { background:#005b8f; }
-
-    /* --- Mobile Optimierung --- */
-    @media (max-width: 600px) {
-      body { padding: 20px; }
-      img { width: 70%; max-width: 240px; }
-      .login-box, .card { width: 90%; padding: 25px 20px; }
-      input, button { width: 100%; font-size: 1.1em; padding: 12px; border-radius: 10px; }
-      h1, h2 { font-size: 1.4em; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HybridClean Login</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+  }
+  .login-box {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+    padding: 40px 50px;
+    width: 320px;
+    text-align: center;
+  }
+  h1 {
+    font-size: 1.6em;
+    margin-bottom: 1em;
+    letter-spacing: 1px;
+  }
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    background: #222;
+    color: #fff;
+    font-size: 1em;
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #444, #777);
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: linear-gradient(90deg, #666, #999);
+  }
+  img {
+    width: 120px;
+    margin-bottom: 20px;
+  }
+</style>
 </head>
 <body>
-  <img src="Bogen02.jpg" alt="Login-Bild">
   <div class="login-box">
-    <h2>Anmeldung</h2>
+    <img src="Bogen02.jpg" alt="Logo">
+    <h1>Anmeldung</h1>
     <input id="username" type="text" placeholder="Benutzername" onkeydown="if(event.key==='Enter'){login()}">
-    <br>
     <button onclick="login()">Starten</button>
   </div>
-
-  <script>
-    function login() {
-      const user = document.getElementById("username")?.value?.trim();
-      if (!user) {
-        alert("Bitte Benutzername eingeben.");
-        return;
-      }
-
-      // 🧭 Netlify / lokaler Modus
-      if (window.location.hostname.includes("netlify.app")) {
-        console.log("Netlify-Login aktiv → Weiterleitung zur Welcome-Seite");
-        document.querySelector("button").disabled = true;
-        setTimeout(() => window.location.href = "welcome.html", 800);
-        return;
-      }
-
-      // 🌐 Apps-Script-Modus
-      try {
-        google.script.run
-          .withSuccessHandler(res => {
-            if (res === "OK") window.location.href = "welcome.html";
-            else alert("Falscher Benutzer oder Passwort.");
-          })
-          .processLogin(user);
-      } catch (e) {
-        console.warn("Apps Script nicht verfügbar:", e);
-        window.location.href = "welcome.html";
-      }
+<script>
+  function login() {
+    const user = document.getElementById('username').value.trim();
+    if (!user) {
+      alert("Bitte Benutzername eingeben!");
+      return;
     }
-  </script>
+    console.log("Login erfolgreich für:", user);
+    window.location.href = "welcome.html";
+  }
+</script>
 </body>
 </html>
