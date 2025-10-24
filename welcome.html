@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willkommen</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 320px;
+    }
+    h1 {
+      font-size: 1.6em;
+      margin-bottom: 15px;
+      color: #000;
+    }
+    p {
+      color: #444;
+      margin-bottom: 25px;
+    }
+    button {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+    button:hover {
+      background: #333;
+    }
+    /* --- Mobile Optimierung --- */
+    @media (max-width: 600px) {
+      body { padding: 20px; }
+      img { width: 70%; max-width: 240px; }
+      .login-box, .card { width: 90%; padding: 25px 20px; }
+      input, button { width: 100%; font-size: 1.1em; padding: 12px; border-radius: 10px; }
+      h1, h2 { font-size: 1.4em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Willkommen!</h1>
+    <p>Du bist erfolgreich angemeldet.</p>
+    <button onclick="logout()">Beenden</button>
+  </div>
+
+  <script>
+    function logout() {
+      console.log("Logout → zurück zur Login-Seite");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

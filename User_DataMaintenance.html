@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schausteller App – Datenpflege</title>
+
+  <style>
+    :root {
+      --bg: #111;
+      --fg: #fff;
+      --accent: #eee;
+      --border: #333;
+    }
+
+    body {
+      font-family: "Segoe UI", "Nunito Sans", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== Header ===== */
+    header.app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #000;
+      padding: 14px 20px;
+      border-bottom: 2px solid var(--border);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    header .logout-btn {
+      background: var(--fg);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    header .logout-btn:hover {
+      background: #ddd;
+    }
+
+    /* ===== Main Content ===== */
+    main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #222;
+      color: var(--fg);
+    }
+
+    .search-bar button {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .search-bar button:hover {
+      filter: brightness(0.85);
+    }
+
+    #tableContainer {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--fg);
+      font-size: 14px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #333;
+      padding: 8px 6px;
+      text-align: left;
+    }
+
+    th {
+      background: #222;
+      font-weight: 600;
+    }
+
+    tr:hover td {
+      background: #333;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+    }
+
+    .spinner {
+      display: none;
+      margin: 10px auto;
+      border: 4px solid #222;
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="user-info">
+      👤 <span id="userName"><?= user ?></span> – 🎪 <span id="schaustellerName"><?= schausteller ?></span>
+    </div>
+    <button class="logout-btn" onclick="logout()">⏻ Abmelden</button>
+  </header>
+
+  <main>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="🔍 Datensatz suchen..." oninput="filterTable()">
+      <button onclick="loadData()">Neu laden</button>
+    </div>
+
+    <div id="tableContainer">
+      <div class="spinner" id="spinner"></div>
+      <table id="dataTable"></table>
+    </div>
+  </main>
+
+  <script>
+    let allData = [];
+
+    // Daten laden
+    function loadData() {
+      const spinner = document.getElementById("spinner");
+      spinner.style.display = "block";
+      document.getElementById("dataTable").innerHTML = "";
+
+      google.script.run.withSuccessHandler(data => {
+        spinner.style.display = "none";
+        allData = data || [];
+        renderTable(allData);
+      }).getData();
+    }
+
+    // Tabelle rendern
+    function renderTable(data) {
+      const table = document.getElementById("dataTable");
+      if (!data.length) {
+        table.innerHTML = `<tr><td class="empty">Keine Datensätze gefunden.</td></tr>`;
+        return;
+      }
+
+      const headers = Object.keys(data[0]);
+      let html = "<thead><tr>";
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += "</tr></thead><tbody>";
+
+      data.forEach(row => {
+        html += "<tr>";
+        headers.forEach(h => html += `<td contenteditable='true'>${row[h] ?? ""}</td>`);
+        html += "</tr>";
+      });
+      html += "</tbody>";
+      table.innerHTML = html;
+    }
+
+    // Filter
+    function filterTable() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = allData.filter(row =>
+        Object.values(row).some(val => String(val).toLowerCase().includes(query))
+      );
+      renderTable(filtered);
+    }
+
+    // Logout
+    function logout() {
+      const user = document.getElementById("userName").textContent || "Unbekannt";
+      console.log("Logout gestartet für:", user);
+      google.script.run
+        .withSuccessHandler(() => console.log("Logout erfolgreich"))
+        .withFailureHandler(err => alert("Logout-Fehler: " + err.message))
+        .logoutUser(user);
+    }
+
+    // Initial laden
+    document.addEventListener("DOMContentLoaded", loadData);
+  </script>
+</body>
+</html>
